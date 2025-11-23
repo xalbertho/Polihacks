@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='eye.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>insAIght - Hackaton Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow: hidden; 
+            background: #f8f9fa;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* --- HEADER --- */
+        .header-logos {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            z-index: 50;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            height: 100px;
+        }
+
+        .logo-ieee { height: 90px; width: auto; }
+        .logo-insaight { height: 130px; width: auto; }
+
+        /* --- SLIDE GENERAL --- */
+        .slide {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            /* Padding ajustado para dar aire */
+            padding: 120px 50px 180px 50px; 
+            opacity: 0;
+            transform: translateX(100%);
+            transition: transform 0.5s ease-in-out, opacity 0.5s;
+            background: white;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .slide.active { opacity: 1; transform: translateX(0); z-index: 10; }
+        .slide.prev { transform: translateX(-100%); opacity: 0; }
+
+        /* --- TYPOGRAPHY --- */
+        .slide h1 {
+            font-size: 64px;
+            color: #1F4788;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-style: italic;
+            width: 100%;
+        }
+
+        .slide h2 {
+            font-size: 48px;
+            color: #1F4788;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-style: italic;
+            width: 100%;
+        }
+
+        .slide p, .slide li {
+            font-size: 22px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* --- COMPONENTES --- */
+        .content-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 1000px;
+            width: 100%;
+            margin: 10px auto;
+            border: 2px solid #1F4788;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .content-card h3 {
+            color: #1F4788;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .content-card ul { list-style: none; padding-left: 0; }
+        .content-card li { 
+            margin-bottom: 12px; 
+            padding-left: 30px; 
+            position: relative; 
+        }
+        .content-card li::before {
+            content: "•";
+            color: #1F4788;
+            font-weight: bold;
+            font-size: 30px;
+            position: absolute;
+            left: 0;
+            top: -5px;
+        }
+
+        /* --- DIAGRAMA DE ARQUITECTURA --- */
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .flow-box {
+            background: #f8f9fa;
+            padding: 15px 10px;
+            border-radius: 12px;
+            min-width: 110px;
+            width: auto;
+            text-align: center;
+            border: 2px solid #1F4788;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+
+        .flow-box h4 { font-size: 24px; margin-bottom: 5px; }
+        .flow-box p { font-size: 16px; font-weight: 600; margin: 0; }
+
+        .arrow { color: #1F4788; font-size: 20px; font-weight: bold; }
+
+        /* --- TECH GRID --- */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .tech-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #1F4788;
+        }
+        .tech-item h4 { color: #1F4788; font-size: 24px; margin-bottom: 10px; }
+
+        /* --- STATS GRID --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .stat-box {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #1F4788;
+        }
+        .stat-number { font-size: 42px; font-weight: bold; color: #1F4788; }
+        .stat-label { font-size: 18px; color: #555; }
+
+        /* --- CONTROLES Y EXTRAS --- */
+        .nav-controls {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1002;
+            background: rgba(255,255,255,0.9);
+            padding: 12px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-btn {
+            background: linear-gradient(180deg, #1F4788 0%, #153461 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .nav-btn:hover { transform: translateY(-2px); }
+
+        .timer {
+            position: fixed;
+            top: 100px;
+            right: 40px;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #1F4788;
+            border: 2px solid #1F4788;
+            z-index: 1000;
+        }
+        .timer.warning { background: #e74c3c; color: white; border-color: #c0392b; }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 35px;
+            right: 35px;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-weight: 600;
+            color: #1F4788;
+            border: 2px solid #1F4788;
+            z-index: 1000;
+        }
+
+        /* Branding */
+        .insaight-brand .ins { color: #000; }
+        .insaight-brand .ai { color: #163E64; }
+        .insaight-brand .ght { color: #000; }
+
+        /* Link Style */
+        .domain-link {
+            color: #1F4788;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 2px solid #1F4788;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="header-logos">
+            <img src="{{ url_for('static', filename='IEEE_logo.png') }}" alt="IEEE Logo" class="logo-ieee">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="insAIght Logo" class="logo-insaight">
+        </div>
+
+        <div class="timer" id="timer">3:00</div>
+        <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">9</span></div>
+
+        <div class="nav-controls">
+            <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+            <button class="nav-btn" onclick="toggleTimer()">⏯ Timer</button>
+            <button class="nav-btn" onclick="resetTimer()">↻ Reset</button>
+            <button class="nav-btn" onclick="nextSlide()">Siguiente →</button>
+        </div>
+
+        <div class="slide active">
+            <div style="margin-top: 50px; text-align: center;">
+                <h1 style="font-size: 90px;" class="insaight-brand">
+                    <span class="ins">ins</span><span class="ai">AI</span><span class="ght">ght</span>
+                </h1>
+                <div class="content-card" style="margin-top: 40px; border-left: 6px solid #1F4788;">
+                    <p style="font-style: italic; font-size: 28px; color: #1F4788;">
+                        "Diseñar para los OJOS significa diseñar para la inteligencia. Significa diseñar emociones, pero también diseñar información y conocimiento."
+                    </p>
+                </div>
+                <p style="margin-top: 20px; font-weight: 600; color: #666;">- Richard Saul Wurman</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1 class="insaight-brand" style="margin-top: 40px;">
+                <span class="ins">ins</span><span class="ai">AI</span><span class="ght">ght</span>
+            </h1>
+            <div class="content-card" style="background: #1F4788; color: white; text-align: center;">
+                <p style="font-size: 38px; font-weight: 700; color: white;">
+                    De imagen a voz en segundos
+                </p>
+                <p style="font-size: 28px; margin-top: 15px; color: #e0e0e0;">
+                    La IA describe lo que ve la cámara
+                </p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>El Problema</h2>
+            <div class="content-card">
+                <h3> <lr>285 millones de personas con discapacidad visual</lr></h3>
+                <p style="margin-bottom: 20px;">Barreras diarias en el acceso a información:</p>
+                <ul>
+                    <li>Leer etiquetas de productos, menús y documentos</li>
+                    <li>Identificar objetos en su entorno inmediato</li>
+                    <li>Navegar espacios desconocidos con seguridad</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Nuestra Solución</h2>
+            <div class="content-card">
+                <h3>Un asistente visual portátil con IA</h3>
+                <p style="margin-bottom: 20px;">Combinamos IoT y LLMs para crear "ojos artificiales":</p>
+                <ul>
+                    <li><strong>ESP32-CAM:</strong> Captura de imagen ligera y eficiente</li>
+                    <li><strong>Google Gemini:</strong> Análisis contextual profundo</li>
+                    <li><strong>ElevenLabs:</strong> Voz humana y empática</li>
+                    <li><strong>Tiempo Real:</strong> Respuesta en menos de 3 segundos</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Arquitectura del Sistema</h2>
+            <div class="flow-diagram">
+                <div class="flow-box"><h4>📷</h4><p>ESP32</p></div>
+                <div class="arrow">→</div>
+                <div class="flow-box"><h4>📤</h4><p>POST</p></div>
+                <div class="arrow">→</div>
+                <div class="flow-box"><h4>🌐</h4><p>Flask</p></div>
+                <div class="arrow">→</div>
+                <div class="flow-box"><h4>🤖</h4><p>Gemini</p></div>
+                <div class="arrow">→</div>
+                <div class="flow-box"><h4>🔊</h4><p>ElevenLabs</p></div>
+                <div class="arrow">→</div>
+                <div class="flow-box"><h4>👤</h4><p>Usuario</p></div>
+            </div>
+            <p style="margin-top: 40px; font-size: 24px; color: #1F4788; font-weight: 700;">
+             Procesamiento completo en &lt; 3 segundos
+            </p>
+        </div>
+
+        <div class="slide">
+            <h2>Stack Tecnológico</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h4>🔧 Hardware</h4>
+                    <p>ESP32-CAM (WiFi + OV2640)</p>
+                </div>
+                <div class="tech-item">
+                    <h4>🐍 Backend</h4>
+                    <p>Python Flask + API REST</p>
+                </div>
+                <div class="tech-item">
+                    <h4>🧠 IA Visión</h4>
+                    <p>Google Gemini 1.5 Flash</p>
+                </div>
+                <div class="tech-item">
+                    <h4>🎙️ IA Voz</h4>
+                    <p>ElevenLabs TTS Multilingual</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Demo en Vivo</h2>
+            <div class="content-card" style="text-align: center;">
+                <h3>Prueba de Concepto</h3>
+                <p>El sistema está activo en nuestro servidor.</p>
+                
+                <div style="margin: 20px 0;">
+                    <span style="font-size: 28px; color: #1F4788; font-weight: bold;">insaight.club/app</span>
+                </div>
+
+                <button onclick="goToDemo()" style="margin-top: 10px; background: linear-gradient(180deg, #1F4788 0%, #153461 100%); color: white; border: none; padding: 20px 50px; border-radius: 10px; font-size: 24px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(31, 71, 136, 0.4);">
+                    ▶️ CARGAR DEMO
+                </button>
+                </div>
+        </div>
+
+        <div class="slide">
+            <h2>Impacto y Viabilidad</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number">285M</div>
+                    <div class="stat-label">Mercado Potencial</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">&lt;$30</div>
+                    <div class="stat-label">Costo Hardware</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Precisión IA</div>
+                </div>
+            </div>
+            <div class="content-card" style="margin-top: 30px;">
+                <p><strong>Escalabilidad:</strong> Fácil integración en gafas inteligentes, collares o apps móviles.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Futuro y Cierre</h2>
+            <div class="tech-grid">
+                <div class="tech-item" style="border-color: #666;">
+                    <h4>🚧 Retos</h4>
+                    <p>Latencia en redes 4G y consumo de batería.</p>
+                </div>
+                <div class="tech-item" style="border-color: #1F4788; background: #eef4ff;">
+                    <h4>🚀 Oportunidades</h4>
+                    <p>Reconocimiento facial y navegación GPS asistida.</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 50px; text-align: center;">
+                <h1 class="insaight-brand" style="font-size: 60px;">¡Gracias!</h1>
+                <p style="font-size: 28px; color: #1F4788; font-weight: bold; margin-bottom: 20px;">
+                    insaight.club
+                </p>
+                <p style="font-size: 20px; color: #555;">
+                    <strong>Equipo:</strong> <br>
+                    Barrios Méndez Jose Alberto <br>
+                    Gamez Gress Isaac Humberto<br> 
+                    García Gómez Uriel <br>
+                    <strong>PoliHacks 2025</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let timerInterval;
+        let timeRemaining = 180;
+        let timerRunning = false;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function updateSlideCounter() {
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+        }
+
+        function showSlide(n) {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index < n) slide.classList.add('prev');
+            });
+            if (n >= 0 && n < slides.length) {
+                slides[n].classList.add('active');
+                currentSlide = n;
+                updateSlideCounter();
+                slides[n].scrollTop = 0; 
+            }
+        }
+
+        function nextSlide() { if (currentSlide < slides.length - 1) showSlide(currentSlide + 1); }
+        function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
+
+        function updateTimer() {
+            const m = Math.floor(timeRemaining / 60);
+            const s = timeRemaining % 60;
+            const el = document.getElementById('timer');
+            el.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+            if (timeRemaining <= 30) el.classList.add('warning');
+            else el.classList.remove('warning');
+            if (timeRemaining <= 0) { clearInterval(timerInterval); timerRunning = false; }
+        }
+
+        function toggleTimer() {
+            if (timerRunning) { clearInterval(timerInterval); timerRunning = false; }
+            else { timerInterval = setInterval(() => { timeRemaining--; updateTimer(); }, 1000); timerRunning = true; }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            timeRemaining = 180;
+            updateTimer();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+            else if (e.key.toLowerCase() === 't') toggleTimer();
+        });
+
+        // --- FUNCIÓN REDIRECCIÓN ---
+    function goToDemo() {
+    // Ahora redirige a la nueva ruta de la app
+    window.open("/app", "_blank");
+    }
+
+        showSlide(0);
+        updateTimer();
+    </script>
+</body>
+</html>
