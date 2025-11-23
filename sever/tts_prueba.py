@@ -1,6 +1,6 @@
 from elevenlabs.client import ElevenLabs
 
-API_KEY = "sk_6a42b6e69b27eac4e1cfcee878bcc439553c4cad168a4fde"
+API_KEY = "TU_ELEVENSLABS_API_AQUI"
 VOICE_ID = "m7yTemJqdIqrcNleANfX"
 
 # Crea el cliente una vez
