@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='eye.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>insAIght</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-blue: #0066b3;
+            --white: #ffffff;
+            --black: #000000;
+            --bg-light: #f5f5f5;
+            --border-light: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--white);
+            color: var(--black);
+            font-family: 'Helvetica Neue', 'Inter', -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* Logo */
+        .logo {
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 36px;
+            font-weight: bold;
+            font-style: italic;
+            margin-bottom: 60px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-black {
+            color: var(--black);
+        }
+
+        .logo-blue {
+            color: var(--brand-blue);
+        }
+
+        /* Botón Acerca de */
+        .about-button {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 12px 24px;
+            background: var(--white);
+            color: var(--brand-blue);
+            border: 2px solid var(--brand-blue);
+            border-radius: 8px;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .about-button:hover {
+            background: var(--brand-blue);
+            color: var(--white);
+        }
+
+        /* Contenedor principal */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        /* Sección de imagen */
+        .image-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            background: var(--bg-light);
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .image-wrapper:hover img {
+            transform: scale(1.02);
+        }
+
+        .status {
+            font-size: 12px;
+            color: var(--brand-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--brand-blue);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Sección de contenido */
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--black);
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            min-height: 150px;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--brand-blue);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        /* Audio */
+        .audio-wrapper {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+        }
+
+        audio {
+            width: 100%;
+            height: 40px;
+            outline: none;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background-color: var(--bg-light);
+        }
+
+        audio::-webkit-media-controls-play-button,
+        audio::-webkit-media-controls-mute-button {
+            filter: none;
+        }
+
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            color: var(--black);
+        }
+
+        audio::-webkit-media-controls-timeline {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 25px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .about-button {
+                top: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+
+            .logo {
+                font-size: 28px;
+                margin-bottom: 40px;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .image-wrapper {
+                max-width: 280px;
+            }
+
+            .description {
+                padding: 20px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botón Acerca de -->
+    <a href="/" class="about-button">Inicio</a>
+
+    <!-- Logo -->
+    <div class="logo">
+        <span class="logo-black">ins</span><span class="logo-blue">AI</span><span class="logo-black">ght</span>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Imagen -->
+        <div class="image-section">
+            <div class="status">
+                <div class="status-dot"></div>
+                En línea
+            </div>
+            
+            <div class="image-wrapper">
+                <img id="sensor-img" src="/image?ts={{ timestamp }}" alt="Vista actual">
+            </div>
+        </div>
+
+        <!-- Contenido -->
+        <div class="content-section">
+            <div class="description" id="ai-text">
+                {{ descripcion }}
+            </div>
+
+            <div class="audio-wrapper">
+                <audio id="audio-player" controls>
+                    <source id="audio-source" src="/audio?ts={{ timestamp }}" type="audio/mpeg">
+                    Tu navegador no soporta audio.
+                </audio>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let lastTimestamp = "{{ timestamp }}";
+        let autoPlayEnabled = false;
+        // Función para checar actualizaciones
+        function checkUpdate() {
+            fetch('/check_update')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.timestamp > lastTimestamp) {
+                        lastTimestamp = data.timestamp;
+                        updateInterface(data.timestamp, data.descripcion);
+                    }
+                })
+                .catch(err => console.error("Error:", err));
+        }
+
+        function updateInterface(ts, text) {
+            // Actualizar imagen
+            const img = document.getElementById("sensor-img");
+            img.src = `/image?ts=${ts}`;
+
+            // Actualizar audio
+            const audioPlayer = document.getElementById("audio-player");
+            const audioSource = document.getElementById("audio-source");
+            audioSource.src = `/audio?ts=${ts}`;
+            audioPlayer.load();
+
+            // Intentar reproducir automáticamente si ya está permitido
+            if (autoPlayEnabled) {
+                audioPlayer.play().catch(err => {
+                    console.log("Reproducción automática bloqueada o fallida:", err);
+                });
+            }
+
+            // Efecto de escritura
+            const textContainer = document.getElementById("ai-text");
+            textContainer.innerHTML = "";
+            typeWriter(text, textContainer, 0);
+        }
+
+
+        // Efecto máquina de escribir
+        function typeWriter(text, element, i) {
+            if (i < text.length) {
+                element.innerHTML = text.substring(0, i + 1) + '<span class="typing-cursor"></span>';
+                const delay = Math.random() * 30 + 20;
+                setTimeout(() => typeWriter(text, element, i + 1), delay);
+            } else {
+                element.innerHTML = text;
+            }
+        }
+
+        // Iniciar polling cada 2 segundos
+        setInterval(checkUpdate, 2000);
+
+        // Ejecutar efecto inicial
+        const initialText = "{{ descripcion}}";
+        document.getElementById("ai-text").innerHTML = "";
+        typeWriter(initialText, document.getElementById("ai-text"), 0);
+        // En cuanto el usuario haga un clic en la página, permitimos autoplay
+        document.addEventListener('click', () => {
+            autoPlayEnabled = true;
+            console.log("Autoplay habilitado después de interacción del usuario");
+        }, { once: true });
+
+    </script>
+</body>
+</html>
