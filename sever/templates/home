@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='eye.png') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>insAIght - Inicio</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+            color: #1F4788;
+        }
+        h1 { font-size: 80px; margin-bottom: 10px; font-style: italic; }
+        .ins { color: #000; } .ai { color: #163E64; } .ght { color: #000; }
+        p { font-size: 24px; color: #666; margin-bottom: 50px; }
+        
+        .menu-container { display: flex; gap: 30px; }
+        
+        .btn {
+            padding: 20px 40px;
+            font-size: 24px;
+            text-decoration: none;
+            color: white;
+            border-radius: 15px;
+            font-weight: bold;
+            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-pres { background: #2a59a4; }
+        .btn-app {  background: #2a59a4;; }
+        
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <h1><span class="ins">ins</span><span class="ai">AI</span><span class="ght">ght</span></h1>
+    <p>Asistente de visión artificial accesible</p>
+
+    <div class="menu-container">
+        <a href="/presentacion" class="btn btn-pres">Ver Presentación</a>
+        <a href="/app" class="btn btn-app">Iniciar App</a>
+    </div>
+</body>
+</html>
