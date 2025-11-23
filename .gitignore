@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual envs
+venv/
+.venv/
+
+# Node (por si acaso)
+node_modules/
+
+# Secretos / configs locales (NO subir)
+server/.env
+device_esp32/secrets.h
+mobile_termux/config_local.sh
+mobile_termux/.env
+
+# Logs
+*.log
